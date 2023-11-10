@@ -1,0 +1,37 @@
+{{- if .Capabilities.APIVersions.Has "kyverno.io/v1" }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: "copy-grafana-admin-credentials"
+  annotations:
+    # ensure that we copy the secret before kiali rollout
+    argocd.argoproj.io/sync-wave: "-5"
+    # avoid troubles with cluster-policy immutable fields
+    argocd.argoproj.io/sync-options: Replace=true
+spec:
+  background: true
+  generateExistingOnPolicyUpdate: true
+  rules:
+  - name: "copy-oidc-client-token-for-harbor"
+    match:
+      any:
+      - resources:
+          kinds:
+          - Secret
+          names:
+          - prometheus-grafana
+          namespaces:
+          - prometheus-operator
+    generate:
+      synchronize: true
+      apiVersion: v1
+      kind: Secret
+      name: grafana
+      namespace: {{ .Release.Namespace | quote }}
+      data:
+        metadata:
+          labels:
+            app: kiali
+        data:
+          grafana-password: "{{`{{request.object.data.\"admin-password\"}}`}}"
+{{ end }}

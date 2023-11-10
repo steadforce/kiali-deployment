@@ -1,0 +1,9 @@
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: {{ .Values.subDomain }}
+spec:
+  name: {{ .Values.subDomain }}
+  group: steadforce-infrastructure
+  icon: https://github.com/stakater/ForecastleIcons/blob/master/kiali.png
+  url: https://{{ .Values.subDomain }}.{{ .Values.global.acme.domain }}

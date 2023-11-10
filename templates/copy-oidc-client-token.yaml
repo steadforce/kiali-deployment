@@ -1,0 +1,37 @@
+{{- if .Capabilities.APIVersions.Has "kyverno.io/v1" }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: "copy-oidc-client-token-for-kiali"
+  annotations:
+    # ensure that we copy the secret before kiali rollout
+    argocd.argoproj.io/sync-wave: "-5"
+    # avoid troubles with cluster-policy immutable fields
+    argocd.argoproj.io/sync-options: Replace=true
+spec:
+  background: true
+  generateExistingOnPolicyUpdate: true
+  rules:
+  - name: "copy-oidc-client-token-for-harbor"
+    match:
+      any:
+      - resources:
+          kinds:
+          - Secret
+          names:
+          - dex-static-clients-secret
+          namespaces:
+          - argocd
+    generate:
+      synchronize: true
+      apiVersion: v1
+      kind: Secret
+      name: kiali
+      namespace: {{ .Release.Namespace | quote }}
+      data:
+        metadata:
+          labels:
+            app: kiali
+        data:
+          oidc-secret: "{{`{{request.object.data.kiali}}`}}"
+{{ end }}

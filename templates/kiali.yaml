@@ -1,0 +1,75 @@
+{{- if .Capabilities.APIVersions.Has "kiali.io/v1alpha1" }}
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+spec:
+  api:
+    namespaces:
+      exclude:
+      - "^kube-.+"
+  auth:
+    strategy: openid
+    openid:
+      client_id: "kiali"
+      disable_rbac: true
+      insecure_skip_verify_tls: true
+      issuer_uri: "https://argocd.{{ .Values.global.acme.domain }}/api/dex"
+      scopes:
+      - openid
+      - email
+      username_claim: email
+  deployment:
+    accessible_namespaces:
+    - .+
+    cluster_wide_access: true
+    image_pull_policy: IfNotPresent
+    image_version: operator_version
+    {{- if .Values.kiali.resources }}
+    resources: {{ toYaml .Values.kiali.resources | nindent 6 }}
+    {{- end }}
+  external_services:
+    grafana:
+      auth:
+        password: secret:grafana:grafana-password
+        username: admin
+        type: basic
+      # Grafana service name is "prometheus-operator-grafana" and
+      # is in the "prometheus-operator" namespace.
+      in_cluster_url: 'http://prometheus-operator-grafana.prometheus-operator/'
+      # Public facing URL of Grafana
+      url: https://cluster-grafana.{{ .Values.global.acme.domain }}
+      dashboards:
+      - name: "Istio Service Dashboard"
+        variables:
+          namespace: "var-namespace"
+          service: "var-service"
+      - name: "Istio Workload Dashboard"
+        variables:
+          namespace: "var-namespace"
+          workload: "var-workload"
+      - name: "Istio Mesh Dashboard"
+      - name: "Istio Control Plane Dashboard"
+      - name: "Istio Performance Dashboard"
+      - name: "Istio Wasm Extension Dashboard"
+    istio:
+      component_status:
+        components:
+        - app_label: istio-ingress
+          is_core: true
+          is_proxy: true
+          namespace: istio-ingress
+        - app_label: istio-egress
+          is_core: true
+          is_proxy: true
+          namespace: istio-egress
+        enabled: true
+    prometheus:
+      # Prometheus service name is "prometheus-operator-kube-p-prometheus" and is in the "prometheus-operator" namespace
+      url: "http://prometheus-operator-kube-p-prometheus.prometheus-operator:9090/"
+    tracing:
+      enabled: false
+  istio_namespace: istio-system
+  server:
+    web_port: '443'
+{{ end }}

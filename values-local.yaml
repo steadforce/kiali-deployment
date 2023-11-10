@@ -1,0 +1,8 @@
+kiali:
+  resources: ~
+kiali-operator:
+  resources:
+    limits: ~
+    requests:
+      cpu: "0m"
+      memory: "0Mi"
