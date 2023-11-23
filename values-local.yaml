@@ -1,4 +1,9 @@
 kiali:
+  auth:
+    openid:
+      # in local deployment we have insecure staging
+      # let's encrypt certs
+      insecureSkipVerifyTls: true
   resources: ~
 kiali-operator:
   resources:

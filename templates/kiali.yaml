@@ -13,7 +13,7 @@ spec:
     openid:
       client_id: "kiali"
       disable_rbac: true
-      insecure_skip_verify_tls: true
+      insecure_skip_verify_tls: {{ .Values.kiali.auth.openid.insecureSkipVerifyTls }}
       issuer_uri: "https://argocd.{{ .Values.global.acme.domain }}/api/dex"
       scopes:
       - openid

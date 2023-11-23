@@ -5,6 +5,9 @@ global:
     ingressGateway:
       namespace: istio-ingress
 kiali:
+  auth:
+    openid:
+      insecureSkipVerifyTls: false
   resources:
     limits:
       cpu: "0m"
