@@ -2,7 +2,7 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: "copy-oidc-client-token-for-kiali"
+  name: &clusterPolicyName copy-oidc-client-token-for-kiali
   annotations:
     # ensure that we copy the secret before kiali rollout
     argocd.argoproj.io/sync-wave: "-5"
@@ -12,7 +12,7 @@ spec:
   background: true
   generateExistingOnPolicyUpdate: true
   rules:
-  - name: "copy-oidc-client-token-for-harbor"
+  - name: *clusterPolicyName
     match:
       any:
       - resources:
