@@ -8,18 +8,39 @@ kiali:
   auth:
     openid:
       insecureSkipVerifyTls: false
+  podAnnotations:
+    sidecar.istio.io/proxyCPU: 10m
+    sidecar.istio.io/proxyCPULimit: 1000m
+    sidecar.istio.io/proxyMemory: 64Mi
+    sidecar.istio.io/proxyMemoryLimit: 80Mi
   resources:
     limits:
-      cpu: "0m"
-      memory: "0Mi"
+      cpu: 500m
+      memory: 128Mi
     requests:
-      cpu: "0m"
-      memory: "0Mi"
+      cpu: 25m
+      memory: 80Mi
 kiali-operator:
   allowAdHocKialiImage: true
   debug:
     enabled: false
   image:
     pullPolicy: IfNotPresent
+  podAnnotations:
+    sidecar.istio.io/proxyCPU: 11m
+    sidecar.istio.io/proxyCPULimit: 1000m
+    sidecar.istio.io/proxyMemory: 64Mi
+    sidecar.istio.io/proxyMemoryLimit: 80Mi
+  resources:
+    limits: 
+      # due to usage of ansible operator framework
+      # kiali is a cpu hog on reconciliation
+      cpu: 1500m
+      # due to usage of ansible operator framework
+      # kiali is a memory hog on reconciliation
+      memory: 448Mi
+    requests:
+      cpu: 12m
+      memory: 256Mi
   watchNamespace: kiali-operator
 subDomain: kiali

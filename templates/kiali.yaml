@@ -25,6 +25,9 @@ spec:
     cluster_wide_access: true
     image_pull_policy: IfNotPresent
     image_version: operator_version
+    {{- if .Values.kiali.podAnnotations }}
+    pod_annotations: {{ toYaml .Values.kiali.podAnnotations | nindent 6 }}
+    {{- end }}
     {{- if .Values.kiali.resources }}
     resources: {{ toYaml .Values.kiali.resources | nindent 6 }}
     {{- end }}

@@ -4,10 +4,20 @@ kiali:
       # in local deployment we have insecure staging
       # let's encrypt certs
       insecureSkipVerifyTls: true
-  resources: ~
+  podAnnotations: ~
+  # we have to set these values for local deployment
+  # if null kiali-operator uses it's defaults
+  resources:
+    limits:
+      cpu: 0m
+      memory: 0Mi
+    requests:
+      cpu: 0m
+      memory: 0Mi
 kiali-operator:
+  podAnnotations: ~
   resources:
     limits: ~
     requests:
-      cpu: "0m"
-      memory: "0Mi"
+      cpu: 0m
+      memory: 0Mi
