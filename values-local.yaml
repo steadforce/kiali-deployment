@@ -6,7 +6,7 @@ kiali:
       insecureSkipVerifyTls: true
   podAnnotations: ~
   # we have to set these values for local deployment
-  # if null kiali-operator uses it's defaults
+  # if null, kiali-operator uses it's defaults
   resources:
     limits:
       cpu: 0m
