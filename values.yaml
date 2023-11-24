@@ -35,7 +35,8 @@ kiali-operator:
     limits: 
       # due to usage of ansible operator framework
       # kiali is a cpu hog on reconciliation
-      cpu: 1500m
+      # even with a timeslice of 1,5s we had 100% throttling
+      cpu: 3000m
       # due to usage of ansible operator framework
       # kiali is a memory hog on reconciliation
       memory: 448Mi
