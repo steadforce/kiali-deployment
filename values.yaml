@@ -30,7 +30,7 @@ kiali-operator:
     sidecar.istio.io/proxyCPU: 11m
     sidecar.istio.io/proxyCPULimit: 1000m
     sidecar.istio.io/proxyMemory: 64Mi
-    sidecar.istio.io/proxyMemoryLimit: 80Mi
+    sidecar.istio.io/proxyMemoryLimit: 88Mi
   resources:
     limits: 
       # due to usage of ansible operator framework
