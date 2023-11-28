@@ -1,0 +1,47 @@
+global:
+  acme:
+    domain: steadops.local.steadforce.com
+  istio:
+    ingressGateway:
+      namespace: istio-ingress
+kiali:
+  auth:
+    openid:
+      insecureSkipVerifyTls: false
+  podAnnotations:
+    sidecar.istio.io/proxyCPU: 10m
+    sidecar.istio.io/proxyCPULimit: 1000m
+    sidecar.istio.io/proxyMemory: 64Mi
+    sidecar.istio.io/proxyMemoryLimit: 80Mi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 25m
+      memory: 80Mi
+kiali-operator:
+  allowAdHocKialiImage: true
+  debug:
+    enabled: false
+  image:
+    pullPolicy: IfNotPresent
+  podAnnotations:
+    sidecar.istio.io/proxyCPU: 11m
+    sidecar.istio.io/proxyCPULimit: 1000m
+    sidecar.istio.io/proxyMemory: 64Mi
+    sidecar.istio.io/proxyMemoryLimit: 88Mi
+  resources:
+    limits: 
+      # due to usage of ansible operator framework
+      # kiali is a cpu hog on reconciliation
+      # even with a timeslice of 1,5s we had 100% throttling
+      cpu: 3000m
+      # due to usage of ansible operator framework
+      # kiali is a memory hog on reconciliation
+      memory: 448Mi
+    requests:
+      cpu: 12m
+      memory: 256Mi
+  watchNamespace: kiali-operator
+subDomain: kiali
