@@ -5,5 +5,5 @@ metadata:
 spec:
   name: {{ .Values.subDomain }}
   group: steadforce-infrastructure
-  icon: https://github.com/stakater/ForecastleIcons/blob/master/kiali.png
+  icon: https://raw.githubusercontent.com/stakater/ForecastleIcons/master/kiali.png
   url: https://{{ .Values.subDomain }}.{{ .Values.global.acme.domain }}
