@@ -10,7 +10,7 @@ metadata:
     argocd.argoproj.io/sync-options: Replace=true
 spec:
   background: true
-  generateExistingOnPolicyUpdate: true
+  generateExisting: true
   rules:
   - name: *clusterPolicyName
     match:
