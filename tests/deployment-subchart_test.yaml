@@ -1,0 +1,28 @@
+suite: "test various default subchart attributes of the operator deployment"
+templates:
+- charts/kiali-operator/templates/deployment.yaml
+release:
+  name: kiali-operator
+tests:
+- it: ensure that access to all namespaces is allowed
+  asserts:
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "operator")].env
+      content:
+        name: ALLOW_ALL_ACCESSIBLE_NAMESPACES
+        value: "true"
+  - matchSnapshot: {}
+- it: ensure that custom Kiali images are not allowed
+  asserts:
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "operator")].env
+      content:
+        name: ALLOW_AD_HOC_KIALI_IMAGE
+        value: "false"
+  - matchSnapshot: {}
+- it: operator image
+  asserts:
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].image
+      pattern: "^quay.io/kiali/kiali-operator:"
+  - matchSnapshot: {}

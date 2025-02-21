@@ -1,0 +1,58 @@
+suite: test if the Kiali configured resources for operator container are correct
+templates:
+- charts/kiali-operator/templates/deployment.yaml
+release:
+  name: kiali-operator
+tests:
+- it: kiali-operator container resources for local cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.limits.cpu
+      # on local cluster we expect 0 or 0m cpu limits
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.requests.cpu
+      # on local cluster we expect 0 or 0m cpu requests
+      pattern: "^0.*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.requests.memory
+      # on local cluster we expect 0 or 0Mi 0Gi memory requests
+      pattern: "^0.*"
+  - matchSnapshot: {}
+
+- it: kiali-operator container resources for development cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts: &kialiOperatorResourceAsserts
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.limits.cpu
+      # on local cluster we expect non 0 cpu limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.limits.memory
+      # on local cluster we expect non 0 memory limits
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.requests.cpu
+      # on local cluster we expect non 0 cpu requests
+      pattern: "^[1-9].*"
+  - matchRegex:
+      path: spec.template.spec.containers[?(@.name == "operator")].resources.requests.memory
+      # on local cluster we expect non 0 memory requests
+      pattern: "^[1-9].*"
+  - matchSnapshot: {}
+
+- it: postgres-operator container resources for production cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-production.yaml
+  asserts: *kialiOperatorResourceAsserts
+
