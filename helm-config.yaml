@@ -10,6 +10,7 @@ environments:
     - forecastle.stakater.com/v1alpha1
     - keycloak.org/v1alpha1
     - kiali.io/v1alpha1
+    - kyverno.io/v1
     - monitoring.coreos.com/v1
     - networking.istio.io/v1beta1
     - ossmconsoles.kiali.io/v1alpha1 # is installed when route.openshift.io/v1 is supported by the cluster
