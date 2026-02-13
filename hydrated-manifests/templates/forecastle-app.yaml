@@ -1,0 +1,11 @@
+---
+# Source: kiali/templates/forecastle-app.yaml
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: kiali
+spec:
+  name: kiali
+  group: steadforce-infrastructure
+  icon: https://raw.githubusercontent.com/stakater/ForecastleIcons/master/kiali.png
+  url: https://kiali.steadops.local.steadforce.com
