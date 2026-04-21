@@ -1,6 +1,6 @@
 # Configuration file used by the pipeline hydration step
 # to render the manifests for the different environments
-releaseName: &name kiali
+releaseName: &name kiali-operator
 namespace: *name
 environments:
   local:

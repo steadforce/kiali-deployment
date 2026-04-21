@@ -21,4 +21,4 @@ kiali-operator:
     requests:
       cpu: 12m
       memory: 256Mi
-  watchNamespace: kiali
+  watchNamespace: kiali-operator
