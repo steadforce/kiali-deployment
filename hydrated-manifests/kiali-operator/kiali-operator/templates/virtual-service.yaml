@@ -1,0 +1,23 @@
+---
+# Source: kiali-operator/templates/virtual-service.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kiali
+  labels:
+    name: "kiali-operator"
+spec:
+  gateways:
+    - istio-ingress/kiali-acme-gateway
+  hosts:
+    - kiali.dev.k8s01.steadforce.com
+  http:
+    - headers:
+        response:
+          set:
+            strict-transport-security: max-age=15724800
+      route:
+        - destination:
+            host: kiali
+            port:
+              number: 20001
