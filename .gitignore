@@ -1,2 +1,6 @@
 /.project
 /_local/
+tests/__snapshot__/
+/test-output.xml
+/charts/
+/Chart.lock

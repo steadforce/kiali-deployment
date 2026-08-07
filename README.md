@@ -20,59 +20,76 @@ See the [Helm docs](https://helm.sh/docs/topics/charts/#chart-dependencies)
 for details.
 
 
-## Render helm charts locally
+## Render all manifests locally
 
-The following command renders the charts like argo-cd does to validate the content.
-
-### local
-
-```
- helm template --release-name kiali -n kiali-operator --include-crds --skip-tests \
-  -a autoscaling.k8s.io/v1 \
-  -a cert-manager.io/v1 \
-  -a forecastle.stakater.com/v1alpha1 \
-  -a keycloak.org/v1alpha1 \
-  -a kiali.io/v1alpha1 \
-  -a monitoring.coreos.com/v1 \
-  -a networking.istio.io/v1beta1 \
-  -a security.istio.io/v1beta1 \
-  -f values-local.yaml \
-  --output-dir _local . 
+```shell
+ helm dependency update && \
+ for cluster in $(yq '.environments | keys[]' helm-config.yaml); do
+    helm template \
+      -a "$(cluster=$cluster yq '.environments.[env(cluster)].apis | @csv' helm-config.yaml)" \
+      -f "$(cluster=$cluster yq '.environments.[env(cluster)].valueFiles | @csv' helm-config.yaml)" \
+      -n $(yq 'explode(.) | .namespace // ""' helm-config.yaml) \
+      --output-dir _local/$cluster \
+      --include-crds \
+      --release-name $(yq 'explode(.) | .releaseName // ""' helm-config.yaml) \
+      --skip-tests \
+      .
+ done
 ```
 
-### dev
+# Testing
 
-```
- helm template --release-name kiali -n kiali-operator --include-crds --skip-tests \
-  -a autoscaling.k8s.io/v1 \
-  -a cert-manager.io/v1 \
-  -a forecastle.stakater.com/v1alpha1 \
-  -a keycloak.org/v1alpha1 \
-  -a kiali.io/v1alpha1 \
-  -a monitoring.coreos.com/v1 \
-  -a networking.istio.io/v1beta1 \
-  -a security.istio.io/v1beta1 \
-  -f values-development.yaml \
-  --output-dir _dev . 
-```
+## values-subchart-overrides.yaml
 
-### prod
+The `values-subchart-overrides.yaml` file is used to override values in the postgres-operator chart.
+We have to separate the values for the subcharts from the values for the main chart, to be able to
+unit test for incompatible changes in values of the subcharts. This is necessary because helm does not allow
+switching off the usage of values.yaml. Now it's possible to test if we use the same registry and repository
+for images as the subcharts are using.
 
-```
- helm template --release-name kiali -n kiali-operator --include-crds --skip-tests \
-  -a autoscaling.k8s.io/v1 \
-  -a cert-manager.io/v1 \
-  -a forecastle.stakater.com/v1alpha1 \
-  -a keycloak.org/v1alpha1 \
-  -a kiali.io/v1alpha1 \
-  -a monitoring.coreos.com/v1 \
-  -a networking.istio.io/v1beta1 \
-  -a security.istio.io/v1beta1 \
-  -f values-production.yaml \
-  --output-dir _prod . 
+## run helm unittests
+
+```shell
+ docker run --pull=always -ti --rm -v "$(pwd):/apps" -u $(id -u) helmunittest/helm-unittest .
 ```
 
-You can use this command to check if the output is as you expect. The `-a` parameters are needed since we use the
-helm feature `.Capabilities.APIVersions.Has` to determine if a `CR` is installable in the cluster or not. Since
-helm templating is designed to work offline we have to list the supported `CR`. Using `.Capabilities.APIVersions.Has`
-feature in templating prevents sync errors in argo-cd if a `CR` can't be applied since its `CRD` isn't ready.
+Or with output in JUnit format:
+
+```shell
+ docker run --pull=always -ti --rm -v "$(pwd):/apps" -u $(id -u) helmunittest/helm-unittest -o test-output.xml .
+```
+
+## Run act pipeline locally
+
+To run the pipeline in local environment, start up the workbench, cd into the folder containing this
+`README.md` and execute the following command:
+
+```shell
+  act
+```
+
+On first execution you're asked which flavour of the act image should be used. Using the default `medium`
+is a good starting point.
+
+## Hydration Workflow
+
+This repository implements a **GitOps Hydration Pattern**.
+The `helm-hydration.yaml` workflow is triggered by pushes to the `main` branch. It renders the Helm charts into static Kubernetes manifests and opens automated Pull Requests targeting the specific environment branches (e.g., `environments/local`, `environments/production`) defined in `helm-config.yaml`.
+
+### API Capabilities Configuration
+Because the hydration process runs in a CI environment without access to a live Kubernetes cluster, it must **mock** the cluster's available APIs (CRDs). This is controlled via the `apis` list in `helm-config.yaml`.
+
+If a chart (or its dependencies) uses conditional logic like `if .Capabilities.APIVersions.Has "..."`, and the specific API is missing from `helm-config.yaml`, the resource will **not** be rendered in the final manifest.
+
+### dependency Scanning
+To ensure all conditional resources are correctly rendered, use the provided static analysis tool:
+
+```bash
+./scan-helm-capabilities.sh
+```
+
+This script:
+1.  Downloads and extracts all chart dependencies locally.
+2.  Recursively scans all templates (`.yaml`, `.tpl`) in your chart and its sub-charts.
+3.  Identifies every instance of `.Capabilities.APIVersions.Has`.
+4.  Outputs the exact list of API strings (Groups and Kinds) required in your `helm-config.yaml`.

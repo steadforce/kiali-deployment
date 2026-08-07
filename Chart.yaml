@@ -1,8 +1,8 @@
 apiVersion: v2
 appVersion: &appVersion 2.6.0
-name: kiali
+name: &name kiali-operator
 version: 0.0.0
 dependencies:
-- name: kiali-operator
+- name: *name
   version: *appVersion
   repository: https://kiali.org/helm-charts
