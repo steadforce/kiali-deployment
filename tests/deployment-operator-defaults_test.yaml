@@ -1,10 +1,10 @@
-suite: "test various default subchart attributes of the operator deployment"
+suite: kiali-operator deployment defaults
 templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:
   name: kiali-operator
 tests:
-- it: ensure that access to all namespaces is allowed
+- it: allows access to all namespaces by default
   asserts:
   - contains:
       path: spec.template.spec.containers[?(@.name == "operator")].env
@@ -12,7 +12,7 @@ tests:
         name: ALLOW_ALL_ACCESSIBLE_NAMESPACES
         value: "true"
   - matchSnapshot: {}
-- it: ensure that custom Kiali images are not allowed
+- it: disables ad hoc Kiali images by default
   asserts:
   - contains:
       path: spec.template.spec.containers[?(@.name == "operator")].env
@@ -20,7 +20,7 @@ tests:
         name: ALLOW_AD_HOC_KIALI_IMAGE
         value: "false"
   - matchSnapshot: {}
-- it: operator image
+- it: uses the kiali-operator image by default
   asserts:
   - matchRegex:
       path: spec.template.spec.containers[?(@.name == "operator")].image

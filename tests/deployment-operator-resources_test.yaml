@@ -1,12 +1,12 @@
-suite: test if the Kiali configured resources for operator container are correct
+suite: kiali-operator container resources per cluster
 templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:
   name: kiali-operator
 tests:
-- it: kiali-operator container resources for local cluster
+- it: sets kiali-operator container resources for the local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -27,9 +27,9 @@ tests:
       pattern: "^0.*"
   - matchSnapshot: {}
 
-- it: kiali-operator container resources for development cluster
+- it: sets kiali-operator container resources for the development cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &kialiOperatorResourceAsserts
   - matchRegex:
@@ -50,9 +50,9 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: postgres-operator container resources for production cluster
+- it: sets kiali-operator container resources for the production cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *kialiOperatorResourceAsserts
 

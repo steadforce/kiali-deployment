@@ -1,0 +1,45 @@
+suite: Kiali virtual service routes through the ingress gateway per environment
+templates:
+- virtual-service.yaml
+capabilities:
+  apiVersions:
+  - networking.istio.io/v1beta1
+tests:
+- it: routes through the istio-ingress gateway to the local ACME host
+  values:
+  - ../values-local.yaml
+  asserts:
+  - contains:
+      path: spec.gateways
+      content: istio-ingress/kiali-acme-gateway
+  - contains:
+      path: &hostsPath spec.hosts
+      content: kiali.steadops.local.steadforce.com
+  - matchSnapshot: {}
+
+- it: routes through the istio-ingress gateway to the development ACME host
+  values:
+  - ../values-development.yaml
+  asserts:
+  - contains:
+      path: *hostsPath
+      content: kiali.dev.k8s01.steadforce.com
+  - matchSnapshot: {}
+
+- it: routes through the istio-ingress gateway to the production ACME host
+  values:
+  - ../values-production.yaml
+  asserts:
+  - contains:
+      path: *hostsPath
+      content: kiali.k8s01.steadforce.com
+  - matchSnapshot: {}
+
+- it: routes through the istio-ingress gateway to the k8s03-dev ACME host
+  values:
+  - ../values-sf-k8s03-dev.yaml
+  asserts:
+  - contains:
+      path: *hostsPath
+      content: kiali.k8s03-dev.steadforce.com
+  - matchSnapshot: {}

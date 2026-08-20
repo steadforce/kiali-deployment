@@ -1,12 +1,12 @@
-suite: test if the Kiali operator image used in clusters is correct
+suite: kiali-operator deployment image per cluster
 templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:
   name: kiali-operator
 tests:
-- it: operator image for local full cluster
+- it: uses the operator image for the local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts: &operatorImageAssert
   - matchRegex:
@@ -14,14 +14,14 @@ tests:
       pattern: "^quay.io/kiali/kiali-operator:"
   - matchSnapshot: {}
 
-- it: operator image for development cluster
+- it: uses the operator image for the development cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: *operatorImageAssert
 
-- it: operator image for production cluster
+- it: uses the operator image for the production cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *operatorImageAssert
