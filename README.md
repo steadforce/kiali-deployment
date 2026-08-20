@@ -71,8 +71,7 @@ available, so a CRD that is not installed yet never blocks the rest of the chart
 | `values-subchart-overrides.yaml` | Tunes the `kiali-operator` subchart (image pull policy, ad hoc images, resources) |
 | `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
 
-Argo CD layers `values.yaml`, the environment file, and `values-subchart-overrides.yaml` on top of each other for
-every deployment; `values-local.yaml` replaces the environment file only for local clusters.
+Argo CD applies `values.yaml`, then `values-subchart-overrides.yaml`, then the environment file; for local clusters, use `values-local.yaml` instead of the environment file (and apply it last so its overrides win).
 
 ## Dependencies
 
