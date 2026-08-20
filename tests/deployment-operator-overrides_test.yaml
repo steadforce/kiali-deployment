@@ -1,0 +1,58 @@
+suite: kiali-operator deployment env vars and image pull policy from subchart overrides
+templates:
+- charts/kiali-operator/templates/deployment.yaml
+release:
+  name: kiali-operator
+tests:
+- it: enables ad hoc Kiali images, disables ansible debug logs, and pulls images if not present
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "operator")].imagePullPolicy
+      value: IfNotPresent
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "operator")].env
+      content:
+        name: ALLOW_AD_HOC_KIALI_IMAGE
+        value: "true"
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "operator")].env
+      content:
+        name: ANSIBLE_DEBUG_LOGS
+        value: "false"
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "operator")].env
+      content:
+        name: WATCH_NAMESPACE
+        value: kiali-operator
+  - matchSnapshot: {}
+---
+suite: kiali-operator sidecar pod annotations per environment
+templates:
+- charts/kiali-operator/templates/deployment.yaml
+release:
+  name: kiali-operator
+tests:
+- it: omits sidecar proxy annotations for the local cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-local.yaml
+  asserts:
+  - notExists:
+      path: spec.template.metadata.annotations["sidecar.istio.io/proxyCPU"]
+  - matchSnapshot: {}
+
+- it: sets sidecar proxy annotations for the development cluster
+  values:
+  - ../values-subchart-overrides.yaml
+  - ../values-development.yaml
+  asserts:
+  - equal:
+      path: spec.template.metadata.annotations["sidecar.istio.io/proxyCPU"]
+      value: 11m
+  - equal:
+      path: spec.template.metadata.annotations["sidecar.istio.io/proxyMemoryLimit"]
+      value: 88Mi
+  - matchSnapshot: {}
