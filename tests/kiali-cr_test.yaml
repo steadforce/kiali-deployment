@@ -13,10 +13,10 @@ tests:
       path: spec.auth.openid.insecure_skip_verify_tls
       value: true
   - equal:
-      path: spec.auth.openid.issuer_uri
+      path: &issuerUriPath spec.auth.openid.issuer_uri
       value: "https://argocd.steadops.local.steadforce.com/api/dex"
   - equal:
-      path: spec.external_services.grafana.url
+      path: &grafanaUrlPath spec.external_services.grafana.url
       value: https://cluster-grafana.steadops.local.steadforce.com
   - matchSnapshot: {}
 
@@ -24,14 +24,14 @@ tests:
   values:
   - ../values-development.yaml
   asserts:
-  - equal:
+  - equal: &tlsVerificationEnabledAssert
       path: spec.auth.openid.insecure_skip_verify_tls
       value: false
   - equal:
-      path: spec.auth.openid.issuer_uri
+      path: *issuerUriPath
       value: "https://argocd.dev.k8s01.steadforce.com/api/dex"
   - equal:
-      path: spec.external_services.grafana.url
+      path: *grafanaUrlPath
       value: https://cluster-grafana.dev.k8s01.steadforce.com
   - matchSnapshot: {}
 
@@ -39,14 +39,12 @@ tests:
   values:
   - ../values-production.yaml
   asserts:
+  - equal: *tlsVerificationEnabledAssert
   - equal:
-      path: spec.auth.openid.insecure_skip_verify_tls
-      value: false
-  - equal:
-      path: spec.auth.openid.issuer_uri
+      path: *issuerUriPath
       value: "https://argocd.k8s01.steadforce.com/api/dex"
   - equal:
-      path: spec.external_services.grafana.url
+      path: *grafanaUrlPath
       value: https://cluster-grafana.k8s01.steadforce.com
   - matchSnapshot: {}
 
@@ -54,14 +52,12 @@ tests:
   values:
   - ../values-sf-k8s03-dev.yaml
   asserts:
+  - equal: *tlsVerificationEnabledAssert
   - equal:
-      path: spec.auth.openid.insecure_skip_verify_tls
-      value: false
-  - equal:
-      path: spec.auth.openid.issuer_uri
+      path: *issuerUriPath
       value: "https://argocd.k8s03-dev.steadforce.com/api/dex"
   - equal:
-      path: spec.external_services.grafana.url
+      path: *grafanaUrlPath
       value: https://cluster-grafana.k8s03-dev.steadforce.com
   - matchSnapshot: {}
 ---

@@ -6,7 +6,7 @@ release:
 tests:
 - it: operator image for local full cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts: &operatorImageAssert
   - matchRegex:
@@ -16,12 +16,12 @@ tests:
 
 - it: operator image for development cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: *operatorImageAssert
 
 - it: operator image for production cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *operatorImageAssert

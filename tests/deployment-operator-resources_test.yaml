@@ -6,7 +6,7 @@ release:
 tests:
 - it: kiali-operator container resources for local cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -29,7 +29,7 @@ tests:
 
 - it: kiali-operator container resources for development cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &kialiOperatorResourceAsserts
   - matchRegex:
@@ -50,9 +50,9 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: postgres-operator container resources for production cluster
+- it: kiali-operator container resources for production cluster
   values:
-  - ../values-subchart-overrides.yaml
+  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *kialiOperatorResourceAsserts
 
