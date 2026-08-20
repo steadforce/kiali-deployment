@@ -13,7 +13,7 @@ tests:
       path: spec.gateways[0]
       value: istio-ingress/kiali-acme-gateway
   - equal:
-      path: spec.hosts[0]
+      path: &hostPath spec.hosts[0]
       value: kiali.steadops.local.steadforce.com
   - matchSnapshot: {}
 
@@ -22,7 +22,7 @@ tests:
   - ../values-development.yaml
   asserts:
   - equal:
-      path: spec.hosts[0]
+      path: *hostPath
       value: kiali.dev.k8s01.steadforce.com
   - matchSnapshot: {}
 
@@ -31,7 +31,7 @@ tests:
   - ../values-production.yaml
   asserts:
   - equal:
-      path: spec.hosts[0]
+      path: *hostPath
       value: kiali.k8s01.steadforce.com
   - matchSnapshot: {}
 
@@ -40,6 +40,6 @@ tests:
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - equal:
-      path: spec.hosts[0]
+      path: *hostPath
       value: kiali.k8s03-dev.steadforce.com
   - matchSnapshot: {}

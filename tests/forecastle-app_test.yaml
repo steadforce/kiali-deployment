@@ -10,7 +10,7 @@ tests:
       path: metadata.name
       value: kiali
   - equal:
-      path: spec.url
+      path: &urlPath spec.url
       value: https://kiali.steadops.local.steadforce.com
   - matchSnapshot: {}
 
@@ -19,7 +19,7 @@ tests:
   - ../values-development.yaml
   asserts:
   - equal:
-      path: spec.url
+      path: *urlPath
       value: https://kiali.dev.k8s01.steadforce.com
   - matchSnapshot: {}
 
@@ -28,7 +28,7 @@ tests:
   - ../values-production.yaml
   asserts:
   - equal:
-      path: spec.url
+      path: *urlPath
       value: https://kiali.k8s01.steadforce.com
   - matchSnapshot: {}
 
@@ -37,6 +37,6 @@ tests:
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - equal:
-      path: spec.url
+      path: *urlPath
       value: https://kiali.k8s03-dev.steadforce.com
   - matchSnapshot: {}
