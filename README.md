@@ -119,6 +119,7 @@ The following commands render the chart the same way Argo CD does, so you can va
    --output-dir _local \
    --release-name kiali \
    --skip-tests \
+   --values values-subchart-overrides.yaml \
    --values values-local.yaml
 ```
 
