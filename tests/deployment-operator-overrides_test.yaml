@@ -13,17 +13,17 @@ tests:
       path: spec.template.spec.containers[?(@.name == "operator")].imagePullPolicy
       value: IfNotPresent
   - contains:
-      path: spec.template.spec.containers[?(@.name == "operator")].env
+      path: &operatorEnvPath spec.template.spec.containers[?(@.name == "operator")].env
       content:
         name: ALLOW_AD_HOC_KIALI_IMAGE
         value: "true"
   - contains:
-      path: spec.template.spec.containers[?(@.name == "operator")].env
+      path: *operatorEnvPath
       content:
         name: ANSIBLE_DEBUG_LOGS
         value: "false"
   - contains:
-      path: spec.template.spec.containers[?(@.name == "operator")].env
+      path: *operatorEnvPath
       content:
         name: WATCH_NAMESPACE
         value: kiali-operator
