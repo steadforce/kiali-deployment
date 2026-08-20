@@ -4,7 +4,7 @@ templates:
 release:
   name: kiali-operator
 tests:
-- it: kiali-operator container resources for local cluster
+- it: sets kiali-operator container resources for the local cluster
   values:
   - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -27,7 +27,7 @@ tests:
       pattern: "^0.*"
   - matchSnapshot: {}
 
-- it: kiali-operator container resources for development cluster
+- it: sets kiali-operator container resources for the development cluster
   values:
   - *subchartOverrideValuesFile
   - ../values-development.yaml
@@ -50,7 +50,7 @@ tests:
       pattern: "^[1-9].*"
   - matchSnapshot: {}
 
-- it: kiali-operator container resources for production cluster
+- it: sets kiali-operator container resources for the production cluster
   values:
   - *subchartOverrideValuesFile
   - ../values-production.yaml

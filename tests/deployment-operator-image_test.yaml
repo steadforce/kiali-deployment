@@ -4,7 +4,7 @@ templates:
 release:
   name: kiali-operator
 tests:
-- it: operator image for local full cluster
+- it: uses the operator image for the local cluster
   values:
   - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
@@ -14,13 +14,13 @@ tests:
       pattern: "^quay.io/kiali/kiali-operator:"
   - matchSnapshot: {}
 
-- it: operator image for development cluster
+- it: uses the operator image for the development cluster
   values:
   - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: *operatorImageAssert
 
-- it: operator image for production cluster
+- it: uses the operator image for the production cluster
   values:
   - *subchartOverrideValuesFile
   - ../values-production.yaml
