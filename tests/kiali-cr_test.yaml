@@ -111,3 +111,16 @@ tests:
   values:
   - ../values-production.yaml
   asserts: *kialiCrNonLocalAsserts
+---
+suite: Kiali CR ArgoCD sync-wave annotation
+templates:
+- kiali.yaml
+capabilities:
+  apiVersions:
+  - kiali.io/v1alpha1
+tests:
+- it: sets the sync-wave annotation so the CR rolls out after upstream secrets
+  asserts:
+  - equal:
+      path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+      value: "100"
