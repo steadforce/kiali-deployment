@@ -1,0 +1,42 @@
+suite: Forecastle app link uses the environment ACME domain
+templates:
+- forecastle-app.yaml
+tests:
+- it: renders the local cluster URL
+  values:
+  - ../values-local.yaml
+  asserts:
+  - equal:
+      path: metadata.name
+      value: kiali
+  - equal:
+      path: spec.url
+      value: https://kiali.steadops.local.steadforce.com
+  - matchSnapshot: {}
+
+- it: renders the development cluster URL
+  values:
+  - ../values-development.yaml
+  asserts:
+  - equal:
+      path: spec.url
+      value: https://kiali.dev.k8s01.steadforce.com
+  - matchSnapshot: {}
+
+- it: renders the production cluster URL
+  values:
+  - ../values-production.yaml
+  asserts:
+  - equal:
+      path: spec.url
+      value: https://kiali.k8s01.steadforce.com
+  - matchSnapshot: {}
+
+- it: renders the k8s03-dev cluster URL
+  values:
+  - ../values-sf-k8s03-dev.yaml
+  asserts:
+  - equal:
+      path: spec.url
+      value: https://kiali.k8s03-dev.steadforce.com
+  - matchSnapshot: {}
