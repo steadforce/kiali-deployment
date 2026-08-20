@@ -1,4 +1,4 @@
-suite: test if the Kiali operator image used in clusters is correct
+suite: kiali-operator deployment image per cluster
 templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:

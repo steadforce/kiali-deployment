@@ -1,4 +1,4 @@
-suite: test if the Kiali configured resources for operator container are correct
+suite: kiali-operator container resources per cluster
 templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:
