@@ -1,2 +1,5 @@
 /.project
+/Chart.lock
+/charts/
 /_local/
+/tests/__snapshot__/
