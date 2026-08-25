@@ -43,3 +43,12 @@ tests:
       path: *hostsPath
       content: kiali.k8s03-dev.steadforce.com
   - matchSnapshot: {}
+
+- it: routes through the istio-ingress gateway to the k8s04-dev ACME host
+  values:
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - contains:
+      path: *hostsPath
+      content: kiali.k8s04-dev.steadforce.com
+  - matchSnapshot: {}
