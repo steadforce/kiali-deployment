@@ -67,12 +67,13 @@ tests:
   asserts:
   - equal: *tlsVerificationEnabledAssert
   - equal:
-    path: *issuerUriPath
-    value: "https://argocd.k8s04-dev.steadforce.com/api/dex"
+      path: *issuerUriPath
+      value: "https://argocd.k8s04-dev.steadforce.com/api/dex"
   - equal:
-    path: *grafanaUrlPath
-    value: https://cluster-grafana.k8s04-dev.steadforce.com
+      path: *grafanaUrlPath
+      value: https://cluster-grafana.k8s04-dev.steadforce.com
   - matchSnapshot: {}
+  
 ---
 suite: Kiali CR pod annotations and resources per environment
 templates:
