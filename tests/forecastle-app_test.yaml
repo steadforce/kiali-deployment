@@ -40,3 +40,12 @@ tests:
       path: *urlPath
       value: https://kiali.k8s03-dev.steadforce.com
   - matchSnapshot: {}
+
+- it: renders the k8s04-dev cluster URL
+  values:
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - equal:
+      path: *urlPath
+      value: https://kiali.k8s04-dev.steadforce.com
+  - matchSnapshot: {}
