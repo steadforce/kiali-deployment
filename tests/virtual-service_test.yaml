@@ -4,6 +4,8 @@ templates:
 capabilities:
   apiVersions:
   - networking.istio.io/v1beta1
+values:
+- ../values-subchart-overrides.yaml
 tests:
 - it: routes through the istio-ingress gateway to the local ACME host
   values:
@@ -37,6 +39,7 @@ tests:
 
 - it: routes through the istio-ingress gateway to the k8s03-dev ACME host
   values:
+  - ../values-development.yaml
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - contains:
@@ -46,6 +49,7 @@ tests:
 
 - it: routes through the istio-ingress gateway to the k8s04-dev ACME host
   values:
+  - ../values-development.yaml
   - ../values-sf-k8s04-dev.yaml
   asserts:
   - contains:

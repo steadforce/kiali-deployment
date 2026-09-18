@@ -4,6 +4,8 @@ templates:
 capabilities:
   apiVersions:
   - kiali.io/v1alpha1
+values:
+- ../values-subchart-overrides.yaml
 tests:
 - it: disables TLS verification and uses the local ACME domain
   values:
@@ -50,6 +52,7 @@ tests:
 
 - it: enforces TLS verification and uses the k8s03-dev ACME domain
   values:
+  - ../values-development.yaml
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - equal: *tlsVerificationEnabledAssert
@@ -63,6 +66,7 @@ tests:
 
 - it: enforces TLS verification and uses the k8s04-dev ACME domain
   values:
+  - ../values-development.yaml
   - ../values-sf-k8s04-dev.yaml
   asserts:
   - equal: *tlsVerificationEnabledAssert

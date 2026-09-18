@@ -3,3 +3,4 @@
 /charts/
 /_local/
 /tests/__snapshot__/
+/_*

@@ -1,6 +1,8 @@
 suite: Forecastle app link uses the environment ACME domain
 templates:
 - forecastle-app.yaml
+values:
+- ../values-subchart-overrides.yaml
 tests:
 - it: renders the local cluster URL
   values:
@@ -34,6 +36,7 @@ tests:
 
 - it: renders the k8s03-dev cluster URL
   values:
+  - ../values-development.yaml
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - equal:
@@ -43,6 +46,7 @@ tests:
 
 - it: renders the k8s04-dev cluster URL
   values:
+  - ../values-development.yaml
   - ../values-sf-k8s04-dev.yaml
   asserts:
   - equal:
