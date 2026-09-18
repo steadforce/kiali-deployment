@@ -24,7 +24,7 @@ tests:
 
 - it: enforces TLS verification and uses the development ACME domain
   values:
-  - ../values-development.yaml
+  - &valuesDevelopment ../values-development.yaml
   asserts:
   - equal: &tlsVerificationEnabledAssert
       path: spec.auth.openid.insecure_skip_verify_tls
@@ -52,7 +52,7 @@ tests:
 
 - it: enforces TLS verification and uses the k8s03-dev ACME domain
   values:
-  - ../values-development.yaml
+  - *valuesDevelopment
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - equal: *tlsVerificationEnabledAssert
@@ -66,7 +66,7 @@ tests:
 
 - it: enforces TLS verification and uses the k8s04-dev ACME domain
   values:
-  - ../values-development.yaml
+  - *valuesDevelopment
   - ../values-sf-k8s04-dev.yaml
   asserts:
   - equal: *tlsVerificationEnabledAssert
@@ -76,6 +76,20 @@ tests:
   - equal:
       path: *grafanaUrlPath
       value: https://cluster-grafana.k8s04-dev.steadforce.com
+  - matchSnapshot: {}
+
+- it: enforces TLS verification and uses the k8s05-dev ACME domain
+  values:
+  - *valuesDevelopment
+  - ../values-sf-k8s05-dev.yaml
+  asserts:
+  - equal: *tlsVerificationEnabledAssert
+  - equal:
+      path: *issuerUriPath
+      value: "https://argocd.k8s04-dev.steadforce.com/api/dex"
+  - equal:
+      path: *grafanaUrlPath
+      value: https://cluster-grafana.k8s05-dev.steadforce.com
   - matchSnapshot: {}
   
 ---

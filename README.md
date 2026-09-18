@@ -70,6 +70,7 @@ available, so a CRD that is not installed yet never blocks the rest of the chart
 | `values-production.yaml` | Overrides the ACME domain for the production cluster |
 | `values-sf-k8s03-dev.yaml` | Overrides the ACME domain for the k8s03-dev cluster |
 | `values-sf-k8s04-dev.yaml` | Overrides the ACME domain for the k8s04-dev cluster |
+| `values-sf-k8s05-dev.yaml` | Overrides the ACME domain for the k8s05-dev cluster |
 | `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
 
 Argo CD applies `values.yaml`, then `values-subchart-overrides.yaml`, then the environment file; for local
@@ -191,7 +192,7 @@ The following commands render the chart the same way Argo CD does, so you can va
    --values values-sf-k8s03-dev.yaml
 ```
 
-### k8s04-dev
+### k8s04-devk8s05
 
 ```sh
  docker run \
@@ -212,6 +213,29 @@ The following commands render the chart the same way Argo CD does, so you can va
   --values values-subchart-overrides.yaml \
   --values values-development.yaml \
   --values values-sf-k8s04-dev.yaml
+```
+
+### k8s05-dev
+
+```sh
+ docker run \
+  --rm \
+  -u $(id -u) \
+  -e HOME=/tmp \
+  -v $(pwd):/apps \
+  -w /apps \
+  alpine/helm template . \
+  --api-versions autoscaling.k8s.io/v1 \
+  --api-versions kiali.io/v1alpha1 \
+  --api-versions kyverno.io/v1 \
+  --api-versions networking.istio.io/v1beta1 \
+  --include-crds \
+  --namespace kiali-operator \
+  --output-dir _sf-k8s05-dev \
+  --skip-tests \
+  --values values-subchart-overrides.yaml \
+  --values values-development.yaml \
+  --values values-sf-k8s05-dev.yaml
 ```
 
 > [!NOTE]
