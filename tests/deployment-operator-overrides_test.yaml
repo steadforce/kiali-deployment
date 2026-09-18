@@ -34,10 +34,11 @@ templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:
   name: kiali-operator
+values:
+- ../values-subchart-overrides.yaml
 tests:
 - it: omits sidecar proxy annotations for the local cluster
   values:
-  - ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - notExists:
@@ -46,7 +47,6 @@ tests:
 
 - it: sets sidecar proxy annotations for the development cluster
   values:
-  - ../values-subchart-overrides.yaml
   - ../values-development.yaml
   asserts:
   - equal:

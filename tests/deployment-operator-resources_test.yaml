@@ -3,10 +3,11 @@ templates:
 - charts/kiali-operator/templates/deployment.yaml
 release:
   name: kiali-operator
+values:
+- ../values-subchart-overrides.yaml
 tests:
 - it: sets kiali-operator container resources for the local cluster
   values:
-  - &subchartOverrideValuesFile ../values-subchart-overrides.yaml
   - ../values-local.yaml
   asserts:
   - matchRegex:
@@ -29,7 +30,6 @@ tests:
 
 - it: sets kiali-operator container resources for the development cluster
   values:
-  - *subchartOverrideValuesFile
   - ../values-development.yaml
   asserts: &kialiOperatorResourceAsserts
   - matchRegex:
@@ -52,7 +52,6 @@ tests:
 
 - it: sets kiali-operator container resources for the production cluster
   values:
-  - *subchartOverrideValuesFile
   - ../values-production.yaml
   asserts: *kialiOperatorResourceAsserts
 

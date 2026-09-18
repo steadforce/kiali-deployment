@@ -65,13 +65,15 @@ available, so a CRD that is not installed yet never blocks the rest of the chart
 | File | Purpose |
 | --- | --- |
 | `values.yaml` | Chart defaults, also used as-is for the local cluster's ACME domain |
+| `values-subchart-overrides.yaml` | Tunes the `kiali-operator` subchart (image pull policy, ad hoc images, resources) |
 | `values-development.yaml` | Overrides the ACME domain for the development cluster |
 | `values-production.yaml` | Overrides the ACME domain for the production cluster |
 | `values-sf-k8s03-dev.yaml` | Overrides the ACME domain for the k8s03-dev cluster |
-| `values-subchart-overrides.yaml` | Tunes the `kiali-operator` subchart (image pull policy, ad hoc images, resources) |
+| `values-sf-k8s04-dev.yaml` | Overrides the ACME domain for the k8s04-dev cluster |
 | `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
 
-Argo CD applies `values.yaml`, then `values-subchart-overrides.yaml`, then the environment file; for local clusters, use `values-local.yaml` instead of the environment file (and apply it last so its overrides win).
+Argo CD applies `values.yaml`, then `values-subchart-overrides.yaml`, then the environment file; for local
+clusters, use `values-local.yaml` instead of the environment file (and apply it last so its overrides win).
 
 ## Dependencies
 
@@ -117,7 +119,6 @@ The following commands render the chart the same way Argo CD does, so you can va
    --include-crds \
    --namespace kiali-operator \
    --output-dir _local \
-   --release-name kiali \
    --skip-tests \
    --values values-subchart-overrides.yaml \
    --values values-local.yaml
@@ -140,8 +141,8 @@ The following commands render the chart the same way Argo CD does, so you can va
    --include-crds \
    --namespace kiali-operator \
    --output-dir _development \
-   --release-name kiali \
    --skip-tests \
+   --values values-subchart-overrides.yaml \
    --values values-development.yaml
 ```
 
@@ -162,8 +163,8 @@ The following commands render the chart the same way Argo CD does, so you can va
    --include-crds \
    --namespace kiali-operator \
    --output-dir _production \
-   --release-name kiali \
    --skip-tests \
+   --values values-subchart-overrides.yaml \
    --values values-production.yaml
 ```
 
@@ -184,9 +185,33 @@ The following commands render the chart the same way Argo CD does, so you can va
    --include-crds \
    --namespace kiali-operator \
    --output-dir _sf-k8s03-dev \
-   --release-name kiali \
    --skip-tests \
+   --values values-subchart-overrides.yaml \
+   --values values-development.yaml \
    --values values-sf-k8s03-dev.yaml
+```
+
+### k8s04-dev
+
+```sh
+ docker run \
+  --rm \
+  -u $(id -u) \
+  -e HOME=/tmp \
+  -v $(pwd):/apps \
+  -w /apps \
+  alpine/helm template . \
+  --api-versions autoscaling.k8s.io/v1 \
+  --api-versions kiali.io/v1alpha1 \
+  --api-versions kyverno.io/v1 \
+  --api-versions networking.istio.io/v1beta1 \
+  --include-crds \
+  --namespace kiali-operator \
+  --output-dir _sf-k8s04-dev \
+  --skip-tests \
+  --values values-subchart-overrides.yaml \
+  --values values-development.yaml \
+  --values values-sf-k8s04-dev.yaml
 ```
 
 > [!NOTE]
