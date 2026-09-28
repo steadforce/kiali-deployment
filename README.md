@@ -292,7 +292,7 @@ Both workflows call reusable workflows from
   (falling back to `helm dependency update` with a warning when no lock file exists), runs
   `helm unittest --with-subchart=true -t JUnit -o test-output.xml`, publishes the results as a check run, and runs
   `helm lint`.
-- **Trufflehog** (`trufflehog-oss.yaml@v3.0.0`) scans the commit range of pushes and pull requests to `main`, and
+- **Trufflehog** (`trufflehog-oss.yaml@v4.2.0`) scans the commit range of pushes and pull requests to `main`, and
   can be started manually. The job fails when Trufflehog detects a secret.
 
 On branches starting with `renovate/`, the Helm unittest workflow posts the result to Microsoft Teams. Both
