@@ -1,4 +1,4 @@
-{{- if and (.Capabilities.APIVersions.Has "networking.istio.io/v1beta1") .Values.kiali.auth.openid.issuerServiceEntryAddress }}
+{{- if and (.Capabilities.APIVersions.Has "networking.istio.io/v1beta1") .Values.kiali.auth.openid.issuerServiceEntryEndpoint }}
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
 metadata:
@@ -11,9 +11,9 @@ spec:
   - number: 443
     name: tls
     protocol: TLS
-  resolution: STATIC
+  resolution: DNS
   endpoints:
-  - address: {{ .Values.kiali.auth.openid.issuerServiceEntryAddress }}
+  - address: {{ .Values.kiali.auth.openid.issuerServiceEntryEndpoint }}
     ports:
       tls: 443
 {{- end }}

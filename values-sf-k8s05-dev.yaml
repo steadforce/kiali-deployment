@@ -4,4 +4,4 @@ global:
 kiali:
   auth:
     openid:
-      issuerServiceEntryAddress: 100.64.42.254
+      issuerServiceEntryEndpoint: istio-ingress.istio-ingress.svc.cluster.local

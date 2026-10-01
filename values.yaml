@@ -8,7 +8,7 @@ kiali:
   auth:
     openid:
       insecureSkipVerifyTls: false
-      issuerServiceEntryAddress: ""
+      issuerServiceEntryEndpoint: ""
   podAnnotations:
     sidecar.istio.io/proxyCPU: 10m
     sidecar.istio.io/proxyCPULimit: 1000m

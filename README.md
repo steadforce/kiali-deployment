@@ -70,7 +70,7 @@ available, so a CRD that is not installed yet never blocks the rest of the chart
 | `values-production.yaml` | Overrides the ACME domain for the production cluster |
 | `values-sf-k8s03-dev.yaml` | Overrides the ACME domain for the k8s03-dev cluster |
 | `values-sf-k8s04-dev.yaml` | Overrides the ACME domain for the k8s04-dev cluster |
-| `values-sf-k8s05-dev.yaml` | Overrides the ACME domain and routes Kiali's Dex egress through the k8s05 ingress ClusterIP |
+| `values-sf-k8s05-dev.yaml` | Overrides the ACME domain and routes Kiali's Dex egress through the ingress Service's cluster DNS name |
 | `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
 
 Argo CD applies `values.yaml`, then `values-subchart-overrides.yaml`, then the environment file; for local
