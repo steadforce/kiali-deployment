@@ -85,6 +85,8 @@ templates:
 capabilities:
   apiVersions:
   - kiali.io/v1alpha1
+values:
+- ../values-subchart-overrides.yaml
 tests:
 - it: omits pod annotations and zeroes cpu resources for the local cluster
   values:

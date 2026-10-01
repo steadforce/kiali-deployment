@@ -56,3 +56,25 @@ tests:
       path: *hostsPath
       content: kiali.k8s04-dev.steadforce.com
   - matchSnapshot: {}
+
+- it: uses the ingress gateway namespace passed by Argo CD
+  values:
+  - ../values-production.yaml
+  set:
+    global.istio.ingressGateway.namespace: istio-ingress-external
+  asserts:
+  - equal:
+      path: spec.gateways
+      value:
+      - istio-ingress-external/kiali-acme-gateway
+
+- it: routes to the kiali service named after the subdomain
+  values:
+  - ../values-production.yaml
+  asserts:
+  - equal:
+      path: metadata.name
+      value: kiali
+  - equal:
+      path: spec.http[*].route[?(@.destination.host == "kiali")].destination.port.number
+      value: 20001
