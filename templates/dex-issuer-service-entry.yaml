@@ -1,0 +1,19 @@
+{{- if and (.Capabilities.APIVersions.Has "networking.istio.io/v1beta1") .Values.kiali.auth.openid.issuerServiceEntryAddress }}
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: dex-issuer
+spec:
+  hosts:
+  - argocd.{{ .Values.global.acme.domain }}
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+  resolution: STATIC
+  endpoints:
+  - address: {{ .Values.kiali.auth.openid.issuerServiceEntryAddress }}
+    ports:
+      tls: 443
+{{- end }}

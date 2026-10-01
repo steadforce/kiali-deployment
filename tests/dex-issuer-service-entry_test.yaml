@@ -1,0 +1,42 @@
+suite: Kiali Dex issuer ServiceEntry
+templates:
+- dex-issuer-service-entry.yaml
+capabilities:
+  apiVersions:
+  - networking.istio.io/v1beta1
+values:
+- ../values-subchart-overrides.yaml
+tests:
+- it: does not create a ServiceEntry without an internal ingress address
+  values:
+  - ../values-sf-k8s04-dev.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
+
+- it: routes the k8s05 Dex TLS hostname to the internal ingress address
+  values:
+  - ../values-development.yaml
+  - ../values-sf-k8s05-dev.yaml
+  asserts:
+  - equal:
+      path: kind
+      value: ServiceEntry
+  - contains:
+      path: spec.hosts
+      content: argocd.k8s05-dev.steadforce.com
+  - equal:
+      path: spec.location
+      value: MESH_EXTERNAL
+  - equal:
+      path: spec.ports[0].protocol
+      value: TLS
+  - equal:
+      path: spec.ports[0].number
+      value: 443
+  - equal:
+      path: spec.resolution
+      value: STATIC
+  - equal:
+      path: spec.endpoints[0].address
+      value: 100.64.42.254

@@ -1,3 +1,7 @@
 global:
   acme:
     domain: k8s05-dev.steadforce.com
+kiali:
+  auth:
+    openid:
+      issuerServiceEntryAddress: 100.64.42.254
