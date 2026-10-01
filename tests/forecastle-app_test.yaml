@@ -1,6 +1,9 @@
 suite: Forecastle app link uses the environment ACME domain
 templates:
 - forecastle-app.yaml
+capabilities:
+  apiVersions:
+  - forecastle.stakater.com/v1alpha1
 values:
 - ../values-subchart-overrides.yaml
 tests:

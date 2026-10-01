@@ -114,6 +114,7 @@ The following commands render the chart the same way Argo CD does, so you can va
    -w /apps \
    alpine/helm template . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -136,6 +137,7 @@ The following commands render the chart the same way Argo CD does, so you can va
    -w /apps \
    alpine/helm template . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -158,6 +160,7 @@ The following commands render the chart the same way Argo CD does, so you can va
    -w /apps \
    alpine/helm template . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -180,6 +183,7 @@ The following commands render the chart the same way Argo CD does, so you can va
    -w /apps \
    alpine/helm template . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -203,6 +207,7 @@ The following commands render the chart the same way Argo CD does, so you can va
   -w /apps \
   alpine/helm template . \
   --api-versions autoscaling.k8s.io/v1 \
+  --api-versions forecastle.stakater.com/v1alpha1 \
   --api-versions kiali.io/v1alpha1 \
   --api-versions kyverno.io/v1 \
   --api-versions networking.istio.io/v1beta1 \
@@ -226,6 +231,7 @@ The following commands render the chart the same way Argo CD does, so you can va
   -w /apps \
   alpine/helm template . \
   --api-versions autoscaling.k8s.io/v1 \
+  --api-versions forecastle.stakater.com/v1alpha1 \
   --api-versions kiali.io/v1alpha1 \
   --api-versions kyverno.io/v1 \
   --api-versions networking.istio.io/v1beta1 \
