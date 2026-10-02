@@ -1,0 +1,7 @@
+global:
+  acme:
+    domain: k8s05-dev.steadforce.com
+kiali:
+  auth:
+    openid:
+      issuerServiceEntryEndpoint: istio-ingress.istio-ingress.svc.cluster.local

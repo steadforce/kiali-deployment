@@ -47,7 +47,8 @@ subchart version follows the chart's `appVersion` through a YAML anchor in `Char
 | Template | Resource | Purpose | Required API |
 | --- | --- | --- | --- |
 | `kiali.yaml` | `Kiali` | Configures the Kiali instance the operator reconciles | `kiali.io/v1alpha1` |
-| `forecastle-app.yaml` | `ForecastleApp` | Adds a Forecastle link to the Kiali UI | - |
+| `forecastle-app.yaml` | `ForecastleApp` | Adds a Forecastle link to the Kiali UI | `forecastle.stakater.com/v1alpha1` |
+| `dex-issuer-service-entry.yaml` | `ServiceEntry` | Routes Dex issuer egress through the ingress Service | `networking.istio.io/v1beta1` |
 | `virtual-service.yaml` | `VirtualService` | Exposes Kiali via the ingress gateway | `networking.istio.io/v1beta1` |
 | `default-sidecar.yaml` | `Sidecar` | Restricts the default sidecar egress scope | `networking.istio.io/v1beta1` |
 | `kiali-vpa.yaml` | `VerticalPodAutoscaler` | Disables Kiali VPA resizing | `autoscaling.k8s.io/v1` |
@@ -87,6 +88,7 @@ All commands run from the repository root.
 | `values-production.yaml` | Overrides the ACME domain for the production cluster |
 | `values-sf-k8s03-dev.yaml` | Overrides the ACME domain for the k8s03-dev cluster |
 | `values-sf-k8s04-dev.yaml` | Overrides the ACME domain for the k8s04-dev cluster |
+| `values-sf-k8s05-dev.yaml` | Overrides the ACME domain and routes Kiali's Dex egress through the ingress Service's cluster DNS name |
 | `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
 | `tests/` | helm-unittest suites; `tests/__snapshot__/` is gitignored |
 | `renovate.json` | Renovate configuration |
@@ -94,7 +96,8 @@ All commands run from the repository root.
 `values.yaml` sets `global.acme.domain`, `global.istio.ingressGateway.namespace`, the `kiali` block (OpenID TLS
 verification, sidecar pod annotations, resources), and `subDomain`. The rendering commands below layer
 `values-subchart-overrides.yaml` first, then the environment file; k8s03-dev and k8s04-dev add their cluster file
-on top of `values-development.yaml`, and local clusters use `values-local.yaml` instead of an environment file.
+on top of `values-development.yaml`, while k8s05-dev adds its cluster file as well; local clusters use
+`values-local.yaml` instead of an environment file.
 
 ## Setup
 
@@ -131,8 +134,9 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -153,8 +157,9 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -175,8 +180,9 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -197,8 +203,9 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
+   --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
    --api-versions kyverno.io/v1 \
    --api-versions networking.istio.io/v1beta1 \
@@ -215,23 +222,48 @@ Render the chart per environment to validate the output before pushing. The outp
 
 ```sh
  docker run \
-   -e HOME=/tmp \
-   --rm \
-   -u $(id -u) \
-   -v "$(pwd):/apps" \
-   -w /apps \
-   alpine/helm template . \
-   --api-versions autoscaling.k8s.io/v1 \
-   --api-versions kiali.io/v1alpha1 \
-   --api-versions kyverno.io/v1 \
-   --api-versions networking.istio.io/v1beta1 \
-   --include-crds \
-   --namespace kiali-operator \
-   --output-dir _sf-k8s04-dev \
-   --skip-tests \
-   --values values-subchart-overrides.yaml \
-   --values values-development.yaml \
-   --values values-sf-k8s04-dev.yaml
+  --rm \
+  -u $(id -u) \
+  -e HOME=/tmp \
+  -v $(pwd):/apps \
+  -w /apps \
+  alpine/helm template kiali . \
+  --api-versions autoscaling.k8s.io/v1 \
+  --api-versions forecastle.stakater.com/v1alpha1 \
+  --api-versions kiali.io/v1alpha1 \
+  --api-versions kyverno.io/v1 \
+  --api-versions networking.istio.io/v1beta1 \
+  --include-crds \
+  --namespace kiali-operator \
+  --output-dir _sf-k8s04-dev \
+  --skip-tests \
+  --values values-subchart-overrides.yaml \
+  --values values-development.yaml \
+  --values values-sf-k8s04-dev.yaml
+```
+
+### k8s05-dev
+
+```sh
+ docker run \
+  --rm \
+  -u $(id -u) \
+  -e HOME=/tmp \
+  -v $(pwd):/apps \
+  -w /apps \
+  alpine/helm template kiali . \
+  --api-versions autoscaling.k8s.io/v1 \
+  --api-versions forecastle.stakater.com/v1alpha1 \
+  --api-versions kiali.io/v1alpha1 \
+  --api-versions kyverno.io/v1 \
+  --api-versions networking.istio.io/v1beta1 \
+  --include-crds \
+  --namespace kiali-operator \
+  --output-dir _sf-k8s05-dev \
+  --skip-tests \
+  --values values-subchart-overrides.yaml \
+  --values values-development.yaml \
+  --values values-sf-k8s05-dev.yaml
 ```
 
 > [!NOTE]
@@ -257,7 +289,7 @@ Update the stored snapshots after an intentional rendering change:
 
 ```sh
  docker run \
-   -e HELM_CACHE_HOME=/tmp/helm/.config \
+  -e HELM_CACHE_HOME=/tmp/helm/.config \
    --rm \
    -u $(id -u) \
    -v "$(pwd):/apps" \

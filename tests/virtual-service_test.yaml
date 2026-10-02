@@ -21,7 +21,7 @@ tests:
 
 - it: routes through the istio-ingress gateway to the development ACME host
   values:
-  - ../values-development.yaml
+  - &valuesDevelopment ../values-development.yaml
   asserts:
   - contains:
       path: *hostsPath
@@ -39,7 +39,7 @@ tests:
 
 - it: routes through the istio-ingress gateway to the k8s03-dev ACME host
   values:
-  - ../values-development.yaml
+  - *valuesDevelopment
   - ../values-sf-k8s03-dev.yaml
   asserts:
   - contains:
@@ -49,10 +49,20 @@ tests:
 
 - it: routes through the istio-ingress gateway to the k8s04-dev ACME host
   values:
-  - ../values-development.yaml
+  - *valuesDevelopment
   - ../values-sf-k8s04-dev.yaml
   asserts:
   - contains:
       path: *hostsPath
       content: kiali.k8s04-dev.steadforce.com
+  - matchSnapshot: {}
+
+- it: routes through the istio-ingress gateway to the k8s05-dev ACME host
+  values:
+  - *valuesDevelopment
+  - ../values-sf-k8s05-dev.yaml
+  asserts:
+  - contains:
+      path: *hostsPath
+      content: kiali.k8s05-dev.steadforce.com
   - matchSnapshot: {}
