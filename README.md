@@ -47,7 +47,8 @@ subchart version follows the chart's `appVersion` through a YAML anchor in `Char
 | Template | Resource | Purpose | Required API |
 | --- | --- | --- | --- |
 | `kiali.yaml` | `Kiali` | Configures the Kiali instance the operator reconciles | `kiali.io/v1alpha1` |
-| `forecastle-app.yaml` | `ForecastleApp` | Adds a Forecastle link to the Kiali UI | - |
+| `forecastle-app.yaml` | `ForecastleApp` | Adds a Forecastle link to the Kiali UI | `forecastle.stakater.com/v1alpha1` |
+| `dex-issuer-service-entry.yaml` | `ServiceEntry` | Routes Dex issuer egress through the ingress Service | `networking.istio.io/v1beta1` |
 | `virtual-service.yaml` | `VirtualService` | Exposes Kiali via the ingress gateway | `networking.istio.io/v1beta1` |
 | `default-sidecar.yaml` | `Sidecar` | Restricts the default sidecar egress scope | `networking.istio.io/v1beta1` |
 | `kiali-vpa.yaml` | `VerticalPodAutoscaler` | Disables Kiali VPA resizing | `autoscaling.k8s.io/v1` |
@@ -95,7 +96,8 @@ All commands run from the repository root.
 `values.yaml` sets `global.acme.domain`, `global.istio.ingressGateway.namespace`, the `kiali` block (OpenID TLS
 verification, sidecar pod annotations, resources), and `subDomain`. The rendering commands below layer
 `values-subchart-overrides.yaml` first, then the environment file; k8s03-dev and k8s04-dev add their cluster file
-on top of `values-development.yaml`, and local clusters use `values-local.yaml` instead of an environment file.
+on top of `values-development.yaml`, while k8s05-dev adds its cluster file as well; local clusters use
+`values-local.yaml` instead of an environment file.
 
 ## Setup
 
@@ -132,7 +134,7 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
    --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
@@ -155,7 +157,7 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
    --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
@@ -178,7 +180,7 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
    --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
@@ -201,7 +203,7 @@ Render the chart per environment to validate the output before pushing. The outp
    -u $(id -u) \
    -v "$(pwd):/apps" \
    -w /apps \
-   alpine/helm template . \
+  alpine/helm template kiali . \
    --api-versions autoscaling.k8s.io/v1 \
    --api-versions forecastle.stakater.com/v1alpha1 \
    --api-versions kiali.io/v1alpha1 \
@@ -225,7 +227,7 @@ Render the chart per environment to validate the output before pushing. The outp
   -e HOME=/tmp \
   -v $(pwd):/apps \
   -w /apps \
-  alpine/helm template . \
+  alpine/helm template kiali . \
   --api-versions autoscaling.k8s.io/v1 \
   --api-versions forecastle.stakater.com/v1alpha1 \
   --api-versions kiali.io/v1alpha1 \
@@ -249,7 +251,7 @@ Render the chart per environment to validate the output before pushing. The outp
   -e HOME=/tmp \
   -v $(pwd):/apps \
   -w /apps \
-  alpine/helm template . \
+  alpine/helm template kiali . \
   --api-versions autoscaling.k8s.io/v1 \
   --api-versions forecastle.stakater.com/v1alpha1 \
   --api-versions kiali.io/v1alpha1 \
@@ -287,16 +289,7 @@ Update the stored snapshots after an intentional rendering change:
 
 ```sh
  docker run \
-   -e HELM_CACHE_HOME=/tmp/helm/.config \This example dropped --release-name kiali, so helm template . uses Helm's default release-name. The operator subchart is then named from that release while templates/kialioperator-vpa.yaml:5-10 still targets kiali-kiali-operator, meaning this documented render no longer matches the intended release and contains a VPA target mismatch. Restore the release name before --skip-tests.
-
-This issue also appears in the following locations of the same file:
-
-    line 148
-    line 171
-    line 194
-    line 218
-    line 242
-
+  -e HELM_CACHE_HOME=/tmp/helm/.config \
    --rm \
    -u $(id -u) \
    -v "$(pwd):/apps" \
