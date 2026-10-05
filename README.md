@@ -87,7 +87,7 @@ All commands run from the repository root.
 | `values-production.yaml` | Overrides the ACME domain for the production cluster |
 | `values-sf-k8s03-dev.yaml` | Overrides the ACME domain for the k8s03-dev cluster |
 | `values-sf-k8s04-dev.yaml` | Overrides the ACME domain for the k8s04-dev cluster |
-| `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
+| `values-local.yaml` | Local clusters: zeroes requests and CPU limits, drops pod annotations, skips OIDC TLS checks |
 | `tests/` | helm-unittest suites; `tests/__snapshot__/` is gitignored |
 | `renovate.json` | Renovate configuration |
 
