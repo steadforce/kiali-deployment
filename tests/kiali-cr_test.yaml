@@ -108,7 +108,7 @@ tests:
 - it: sets sidecar pod annotations and non-zero resources for the development cluster
   values:
   - ../values-development.yaml
-  asserts: &kialiCrNonLocalAsserts
+  asserts: &kialiCrNonLocalAssert
   - equal:
       path: spec.deployment.pod_annotations
       value:
@@ -130,7 +130,7 @@ tests:
 - it: sets sidecar pod annotations and non-zero resources for the production cluster
   values:
   - ../values-production.yaml
-  asserts: *kialiCrNonLocalAsserts
+  asserts: *kialiCrNonLocalAssert
 ---
 suite: Kiali CR ArgoCD sync-wave annotation
 templates:
