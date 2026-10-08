@@ -43,16 +43,29 @@ tests:
   asserts:
   - notExists:
       path: spec.template.metadata.annotations["sidecar.istio.io/proxyCPU"]
+  - notExists:
+      path: spec.template.metadata.annotations["sidecar.istio.io/proxyMemoryLimit"]
   - matchSnapshot: {}
 
 - it: sets sidecar proxy annotations for the development cluster
   values:
   - ../values-development.yaml
-  asserts:
+  asserts: &operatorSidecarAnnotationsAssert
   - equal:
       path: spec.template.metadata.annotations["sidecar.istio.io/proxyCPU"]
       value: 11m
   - equal:
+      path: spec.template.metadata.annotations["sidecar.istio.io/proxyCPULimit"]
+      value: 1000m
+  - equal:
+      path: spec.template.metadata.annotations["sidecar.istio.io/proxyMemory"]
+      value: 64Mi
+  - equal:
       path: spec.template.metadata.annotations["sidecar.istio.io/proxyMemoryLimit"]
       value: 88Mi
   - matchSnapshot: {}
+
+- it: sets sidecar proxy annotations for the production cluster
+  values:
+  - ../values-production.yaml
+  asserts: *operatorSidecarAnnotationsAssert
