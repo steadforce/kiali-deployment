@@ -4,3 +4,4 @@
 /_local/
 /tests/__snapshot__/
 /_*
+/test-output.xml

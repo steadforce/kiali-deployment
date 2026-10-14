@@ -47,8 +47,8 @@ subchart version follows the chart's `appVersion` through a YAML anchor in `Char
 | Template | Resource | Purpose | Required API |
 | --- | --- | --- | --- |
 | `kiali.yaml` | `Kiali` | Configures the Kiali instance the operator reconciles | `kiali.io/v1alpha1` |
-| `forecastle-app.yaml` | `ForecastleApp` | Adds a Forecastle link to the Kiali UI | `forecastle.stakater.com/v1alpha1` |
-| `dex-issuer-service-entry.yaml` | `ServiceEntry` | Routes Dex issuer egress through the ingress Service | `networking.istio.io/v1beta1` |
+| `forecastle-app.yaml` | `ForecastleApp` | Adds a Forecastle link to Kiali | `forecastle.stakater.com/v1alpha1` |
+| `dex-issuer-service-entry.yaml` | `ServiceEntry` | Dex issuer egress via ingress | `networking.istio.io/v1beta1` |
 | `virtual-service.yaml` | `VirtualService` | Exposes Kiali via the ingress gateway | `networking.istio.io/v1beta1` |
 | `default-sidecar.yaml` | `Sidecar` | Restricts the default sidecar egress scope | `networking.istio.io/v1beta1` |
 | `kiali-vpa.yaml` | `VerticalPodAutoscaler` | Disables Kiali VPA resizing | `autoscaling.k8s.io/v1` |
@@ -88,15 +88,15 @@ All commands run from the repository root.
 | `values-production.yaml` | Overrides the ACME domain for the production cluster |
 | `values-sf-k8s03-dev.yaml` | Overrides the ACME domain for the k8s03-dev cluster |
 | `values-sf-k8s04-dev.yaml` | Overrides the ACME domain for the k8s04-dev cluster |
-| `values-sf-k8s05-dev.yaml` | Overrides the ACME domain and routes Kiali's Dex egress through the ingress Service's cluster DNS name |
-| `values-local.yaml` | Zeroes resource requests/limits and disables TLS verification for local clusters |
+| `values-sf-k8s05-dev.yaml` | ACME domain for k8s05-dev; Dex egress through the ingress Service's cluster DNS name |
+| `values-local.yaml` | Local clusters: zeroes requests and CPU limits, drops pod annotations, skips OIDC TLS checks |
 | `tests/` | helm-unittest suites; `tests/__snapshot__/` is gitignored |
 | `renovate.json` | Renovate configuration |
 
 `values.yaml` sets `global.acme.domain`, `global.istio.ingressGateway.namespace`, the `kiali` block (OpenID TLS
-verification, sidecar pod annotations, resources), and `subDomain`. The rendering commands below layer
-`values-subchart-overrides.yaml` first, then the environment file; k8s03-dev and k8s04-dev add their cluster file
-on top of `values-development.yaml`, while k8s05-dev adds its cluster file as well; local clusters use
+verification, Dex issuer `ServiceEntry` endpoint, sidecar pod annotations, resources), and `subDomain`. The
+rendering commands below layer `values-subchart-overrides.yaml` first, then the environment file; k8s03-dev,
+k8s04-dev, and k8s05-dev add their cluster file on top of `values-development.yaml`; local clusters use
 `values-local.yaml` instead of an environment file.
 
 ## Setup

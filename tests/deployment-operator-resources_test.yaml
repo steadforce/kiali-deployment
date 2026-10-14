@@ -31,7 +31,7 @@ tests:
 - it: sets kiali-operator container resources for the development cluster
   values:
   - ../values-development.yaml
-  asserts: &kialiOperatorResourceAsserts
+  asserts: &kialiOperatorResourceAssert
   - matchRegex:
       path: spec.template.spec.containers[?(@.name == "operator")].resources.limits.cpu
       # on local cluster we expect non 0 cpu limits
@@ -53,5 +53,5 @@ tests:
 - it: sets kiali-operator container resources for the production cluster
   values:
   - ../values-production.yaml
-  asserts: *kialiOperatorResourceAsserts
+  asserts: *kialiOperatorResourceAssert
 
