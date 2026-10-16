@@ -1,8 +1,29 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     ":dependencyDashboard"
+  ],
+  "packageRules": [
+    {
+      "description": "Kiali supports only certain Istio versions per release, so upgrade one minor and major version at a time instead of jumping to the newest",
+      "matchManagers": [
+        "helmv3"
+      ],
+      "matchPackageNames": [
+        "kiali-operator"
+      ],
+      "separateMultipleMajor": true,
+      "separateMultipleMinor": true
+    },
+    {
+      "description": "Merge patch updates automatically once the checks pass",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "automergeStrategy": "squash"
+    }
   ],
   "postUpdateOptions": [
     "helmUpdateSubChartArchives"
