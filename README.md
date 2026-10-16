@@ -340,9 +340,11 @@ secret is set. Both must be Microsoft Teams Workflows webhook URLs; legacy Offic
 
 ## Dependency Updates
 
-Renovate extends `config:base` and keeps a dependency dashboard issue. It opens pull requests for new
-`kiali-operator` versions without automerging them, and `helmUpdateSubChartArchives` refreshes the committed
-archive under `charts/` in the same pull request.
+Renovate extends `config:recommended` and keeps a dependency dashboard issue. It opens one pull request per
+`kiali-operator` minor and major version (`separateMultipleMinor`, `separateMultipleMajor`) instead of a single one
+for the newest release, because each Kiali release supports only certain Istio versions; merge them in order. They
+are merged by hand; patch updates within the current minor version are automerged (squash) once the checks pass.
+`helmUpdateSubChartArchives` refreshes the committed archive under `charts/` in the same pull request.
 
 To change the dependency manually, edit `Chart.yaml`, then regenerate `Chart.lock` and the archive:
 
